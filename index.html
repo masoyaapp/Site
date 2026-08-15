@@ -1,1 +1,2684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineStream - Watch Movies & Series</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121c;
+            --bg-card: #181828;
+            --bg-card-hover: #202036;
+            --bg-nav: rgba(10, 10, 15, 0.85);
+            --surface: #1a1a2a;
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0c0;
+            --text-muted: #6a6a7e;
+            --accent: #e50914;
+            --accent-hover: #ff1a1a;
+            --accent-glow: rgba(229, 9, 20, 0.4);
+            --gradient-accent: linear-gradient(135deg, #e50914, #ff6b35);
+            --gradient-warm: linear-gradient(135deg, #e50914, #f97316);
+            --gradient-teal: linear-gradient(135deg, #06b6d4, #3b82f6);
+            --gradient-purple: linear-gradient(135deg, #8b5cf6, #ec4899);
+            --gradient-gold: linear-gradient(135deg, #f59e0b, #ef4444);
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 20px rgba(229, 9, 20, 0.3);
+            --shadow-modal: 0 32px 80px rgba(0, 0, 0, 0.8);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-medium: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-body: 'Inter', sans-serif;
+            --font-display: 'Poppins', sans-serif;
+            --nav-height: 68px;
+            --hero-height: 88vh;
+            --card-width: 220px;
+            --card-height: 330px;
+            --card-width-large: 260px;
+            --card-height-large: 390px;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2a3e;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a3a50;
+        }
+
+        /* ============ NAVIGATION ============ */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: var(--nav-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            transition: var(--transition-medium);
+            background: transparent;
+        }
+        .navbar.scrolled {
+            background: var(--bg-nav);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+        }
+        .navbar.scrolled .nav-logo {
+            font-size: 1.45rem;
+        }
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition-medium);
+            user-select: none;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav-logo-icon {
+            font-size: 1.8rem;
+            -webkit-text-fill-color: initial;
+            color: var(--accent);
+            display: inline-block;
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                filter: drop-shadow(0 0 6px rgba(229, 9, 20, 0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 16px rgba(229, 9, 20, 0.9));
+            }
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            list-style: none;
+            transition: var(--transition-medium);
+        }
+        .nav-links li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
+            transition: var(--transition-fast);
+            position: relative;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+        }
+        .nav-links li a:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .nav-links li a.active {
+            color: var(--text-primary);
+            background: rgba(229, 9, 20, 0.12);
+        }
+        .nav-links li a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-search {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .nav-search input {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 9px 16px 9px 40px;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            width: 220px;
+            transition: var(--transition-medium);
+            font-family: var(--font-body);
+            outline: none;
+            letter-spacing: 0.3px;
+        }
+        .nav-search input::placeholder {
+            color: var(--text-muted);
+        }
+        .nav-search input:focus {
+            width: 300px;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(229, 9, 20, 0.15);
+        }
+        .nav-search .search-icon {
+            position: absolute;
+            left: 14px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            pointer-events: none;
+            transition: var(--transition-fast);
+        }
+        .nav-search input:focus~.search-icon {
+            color: var(--accent);
+        }
+        .nav-profile {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            background: var(--gradient-teal);
+            font-weight: 600;
+            color: #fff;
+            transition: var(--transition-fast);
+            border: 2px solid transparent;
+            user-select: none;
+            position: relative;
+        }
+        .nav-profile:hover {
+            border-color: var(--accent);
+            transform: scale(1.05);
+            box-shadow: 0 0 16px rgba(229, 9, 20, 0.3);
+        }
+        .nav-profile .badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 10px;
+            height: 10px;
+            background: #22c55e;
+            border-radius: 50%;
+            border: 2px solid var(--bg-primary);
+        }
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        /* ============ HERO SECTION ============ */
+        .hero {
+            position: relative;
+            height: var(--hero-height);
+            min-height: 600px;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            background: var(--bg-primary);
+        }
+        .hero-background {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .hero-background .hero-bg-img {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: kenBurns 12s ease-in-out infinite alternate;
+            will-change: transform, opacity;
+        }
+        .hero-background .hero-bg-img.active {
+            opacity: 1;
+        }
+        @keyframes kenBurns {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(1.08);
+            }
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            background: linear-gradient(to top, var(--bg-primary) 8%, rgba(10, 10, 15, 0.7) 40%, rgba(10, 10, 15, 0.3) 70%, rgba(10, 10, 15, 0.6) 100%);
+            background: linear-gradient(to right, rgba(10, 10, 15, 0.95) 0%, rgba(10, 10, 15, 0.5) 50%, rgba(10, 10, 15, 0.2) 100%), linear-gradient(to top, var(--bg-primary) 5%, rgba(10, 10, 15, 0.5) 50%, rgba(10, 10, 15, 0.4) 100%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 3;
+            padding: 0 64px 80px;
+            max-width: 700px;
+            animation: fadeInUp 1s ease-out;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .hero-badge-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+        }
+        .hero-badge.quality {
+            background: var(--gradient-accent);
+            color: #fff;
+            border: none;
+        }
+        .hero-badge.rating {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.4);
+            color: #fbbf24;
+        }
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            line-height: 1.05;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .hero-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+        .hero-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .hero-meta .dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--text-muted);
+        }
+        .hero-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 28px;
+            max-width: 560px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 28px;
+            border-radius: var(--radius-full);
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: var(--font-body);
+            cursor: pointer;
+            border: none;
+            transition: var(--transition-medium);
+            letter-spacing: 0.3px;
+            text-decoration: none;
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-play {
+            background: var(--gradient-accent);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(229, 9, 20, 0.4);
+        }
+        .btn-play:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(229, 9, 20, 0.55);
+        }
+        .btn-play:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 12px rgba(229, 9, 20, 0.3);
+        }
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.14);
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .btn-secondary:active {
+            transform: translateY(0);
+        }
+        .btn .btn-icon {
+            font-size: 1.1rem;
+        }
+        .hero-dots {
+            position: absolute;
+            z-index: 3;
+            bottom: 28px;
+            right: 64px;
+            display: flex;
+            gap: 8px;
+        }
+        .hero-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-medium);
+            padding: 0;
+        }
+        .hero-dot.active {
+            background: var(--accent);
+            width: 28px;
+            border-radius: 4px;
+            box-shadow: 0 0 12px rgba(229, 9, 20, 0.5);
+        }
+        .hero-dot:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ============ MAIN CONTENT ============ */
+        .main-content {
+            position: relative;
+            z-index: 5;
+            margin-top: -40px;
+            padding-bottom: 60px;
+        }
+        .genre-bar {
+            display: flex;
+            gap: 8px;
+            padding: 0 64px;
+            margin-bottom: 36px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            flex-wrap: nowrap;
+            position: relative;
+            z-index: 6;
+        }
+        .genre-bar::-webkit-scrollbar {
+            display: none;
+        }
+        .genre-chip {
+            white-space: nowrap;
+            padding: 8px 20px;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+            font-family: var(--font-body);
+            letter-spacing: 0.2px;
+            user-select: none;
+        }
+        .genre-chip:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+        .genre-chip.active {
+            background: var(--gradient-accent);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 4px 16px rgba(229, 9, 20, 0.3);
+        }
+
+        /* Movie Rows */
+        .movie-row {
+            margin-bottom: 44px;
+            padding: 0 64px;
+            position: relative;
+        }
+        .movie-row-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .movie-row-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .movie-row-title .row-accent {
+            width: 4px;
+            height: 22px;
+            border-radius: 4px;
+            background: var(--gradient-accent);
+        }
+        .movie-row-link {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .movie-row-link:hover {
+            color: var(--accent);
+        }
+        .movie-row-scroll {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 8px 0;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        .movie-row-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .scroll-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(20, 20, 35, 0.9);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-medium);
+            opacity: 0;
+            pointer-events: none;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .movie-row:hover .scroll-btn {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .scroll-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(229, 9, 20, 0.4);
+        }
+        .scroll-btn.left {
+            left: 52px;
+        }
+        .scroll-btn.right {
+            right: 52px;
+        }
+
+        /* Movie Cards */
+        .movie-card {
+            flex-shrink: 0;
+            width: var(--card-width);
+            cursor: pointer;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            position: relative;
+            background: var(--bg-card);
+            transition: var(--transition-medium);
+            border: 1px solid var(--border);
+            aspect-ratio: 2/3;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .movie-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--border-hover);
+            z-index: 5;
+        }
+        .movie-card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: var(--transition-medium);
+            pointer-events: none;
+        }
+        .movie-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0) 70%);
+            opacity: 0;
+            transition: var(--transition-medium);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 16px;
+            pointer-events: none;
+        }
+        .movie-card:hover .movie-card-overlay {
+            opacity: 1;
+        }
+        .movie-card-overlay .card-play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--gradient-accent);
+            border: none;
+            color: #fff;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-medium);
+            box-shadow: 0 4px 20px rgba(229, 9, 20, 0.5);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .movie-card:hover .card-play-btn {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: all;
+        }
+        .card-play-btn:hover {
+            box-shadow: 0 8px 32px rgba(229, 9, 20, 0.7);
+        }
+        .movie-card-info {
+            position: relative;
+            z-index: 2;
+        }
+        .movie-card-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .movie-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        .movie-card-meta .star {
+            color: #fbbf24;
+        }
+        .movie-card-rating-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            pointer-events: none;
+        }
+        .movie-card-quality {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: rgba(229, 9, 20, 0.85);
+            color: #fff;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+        }
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 0 4px 4px 0;
+            transition: var(--transition-fast);
+            pointer-events: none;
+        }
+
+        /* ============ MODAL ============ */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-medium);
+            padding: 20px;
+        }
+        .modal-backdrop.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 720px;
+            max-height: 88vh;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            transform: scale(0.9) translateY(20px);
+            transition: var(--transition-medium);
+            box-shadow: var(--shadow-modal);
+            position: relative;
+        }
+        .modal-backdrop.open .modal {
+            transform: scale(1) translateY(0);
+        }
+        .modal::-webkit-scrollbar {
+            width: 4px;
+        }
+        .modal-hero {
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+        .modal-hero-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .modal-hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, var(--bg-secondary) 5%, rgba(18, 18, 28, 0.5) 60%, rgba(18, 18, 28, 0.2) 100%);
+        }
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-fast);
+            z-index: 5;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .modal-close:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: rotate(90deg);
+        }
+        .modal-body {
+            padding: 24px 28px 28px;
+            margin-top: -40px;
+            position: relative;
+            z-index: 2;
+        }
+        .modal-title-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .modal-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+        .modal-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .modal-meta .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-genre {
+            background: rgba(107, 114, 128, 0.2);
+            color: #9ca3af;
+            border: 1px solid rgba(107, 114, 128, 0.3);
+        }
+        .badge-rating {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .modal-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        .modal-cast {
+            margin-bottom: 20px;
+        }
+        .modal-cast-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .modal-cast-list {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .modal-cast-list span {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border);
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .btn-watchlist {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        .btn-watchlist:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            border-color: var(--border-hover);
+        }
+        .btn-watchlist.in-list {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+
+        /* ============ VIDEO PLAYER MODAL ============ */
+        .player-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition-medium);
+        }
+        .player-backdrop.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .player {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+        }
+        .player-video-area {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a0a;
+            overflow: hidden;
+        }
+        .player-video-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.5;
+            filter: blur(2px);
+            transition: var(--transition-medium);
+        }
+        .player-loading {
+            position: absolute;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            transition: var(--transition-medium);
+        }
+        .player-loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .player-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 28px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4), transparent);
+            z-index: 3;
+            opacity: 0;
+            transition: var(--transition-medium);
+        }
+        .player-video-area:hover .player-controls,
+        .player-controls.visible {
+            opacity: 1;
+        }
+        .player-progress-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .player-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-variant-numeric: tabular-nums;
+            min-width: 40px;
+            text-align: center;
+        }
+        .player-progress-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition-fast);
+        }
+        .player-progress-bar:hover {
+            height: 6px;
+        }
+        .player-progress-fill {
+            height: 100%;
+            background: var(--gradient-accent);
+            border-radius: 4px;
+            transition: width 0.3s linear;
+            position: relative;
+            width: 0%;
+        }
+        .player-progress-fill::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 12px rgba(229, 9, 20, 0.7);
+        }
+        .player-buttons-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .player-buttons-left,
+        .player-buttons-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .player-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .player-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .player-btn.play-main {
+            width: 44px;
+            height: 44px;
+            background: var(--gradient-accent);
+            font-size: 1rem;
+            box-shadow: 0 4px 16px rgba(229, 9, 20, 0.5);
+        }
+        .player-btn.play-main:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 6px 24px rgba(229, 9, 20, 0.7);
+        }
+        .player-title-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 3;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+            opacity: 0;
+            transition: var(--transition-medium);
+        }
+        .player-video-area:hover .player-title-bar,
+        .player-title-bar.visible {
+            opacity: 1;
+        }
+        .player-title {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* ============ TOAST ============ */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 4000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px 20px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            animation: toastIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: all;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .toast.removing {
+            animation: toastOut 0.3s ease-in forwards;
+        }
+        .toast .toast-icon {
+            font-size: 1.1rem;
+        }
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes toastOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+        }
+
+        /* ============ FOOTER ============ */
+        .footer {
+            padding: 40px 64px 24px;
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+            position: relative;
+            z-index: 5;
+        }
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+        .footer-links a:hover {
+            color: var(--text-primary);
+        }
+        .footer-copy {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        /* ============ EMPTY STATE ============ */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: none;
+        }
+        .empty-state.visible {
+            display: block;
+        }
+        .empty-state .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1024px) {
+            :root {
+                --card-width: 180px;
+                --card-height: 270px;
+                --hero-height: 75vh;
+            }
+            .hero-content {
+                padding: 0 40px 60px;
+            }
+            .movie-row {
+                padding: 0 40px;
+            }
+            .genre-bar {
+                padding: 0 40px;
+            }
+            .footer {
+                padding: 32px 40px 20px;
+            }
+            .scroll-btn.left {
+                left: 32px;
+            }
+            .scroll-btn.right {
+                right: 32px;
+            }
+        }
+        @media (max-width: 768px) {
+            :root {
+                --nav-height: 60px;
+                --hero-height: 70vh;
+                --card-width: 150px;
+                --card-height: 225px;
+            }
+            .navbar {
+                padding: 0 16px;
+            }
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: var(--nav-height);
+                left: 0;
+                right: 0;
+                background: var(--bg-nav);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 16px;
+                gap: 4px;
+                border-bottom: 1px solid var(--border);
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .nav-links li a {
+                display: block;
+                padding: 12px 16px;
+                font-size: 1rem;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .nav-search input {
+                width: 140px;
+                padding: 8px 12px 8px 36px;
+                font-size: 0.8rem;
+            }
+            .nav-search input:focus {
+                width: 180px;
+            }
+            .nav-profile {
+                width: 32px;
+                height: 32px;
+                font-size: 0.85rem;
+            }
+            .hero {
+                min-height: 500px;
+            }
+            .hero-content {
+                padding: 0 20px 48px;
+            }
+            .hero-title {
+                font-size: clamp(2rem, 7vw, 2.8rem);
+            }
+            .hero-description {
+                font-size: 0.85rem;
+                -webkit-line-clamp: 2;
+            }
+            .hero-buttons .btn {
+                padding: 10px 20px;
+                font-size: 0.8rem;
+            }
+            .hero-dots {
+                right: 20px;
+                bottom: 20px;
+            }
+            .movie-row {
+                padding: 0 20px;
+                margin-bottom: 28px;
+            }
+            .genre-bar {
+                padding: 0 20px;
+                margin-bottom: 24px;
+            }
+            .movie-row-title {
+                font-size: 1.1rem;
+            }
+            .footer {
+                padding: 24px 20px 16px;
+            }
+            .footer-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .scroll-btn {
+                display: none !important;
+            }
+            .modal {
+                max-width: 100%;
+                max-height: 92vh;
+                border-radius: var(--radius-lg);
+            }
+            .modal-hero {
+                height: 200px;
+                border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            }
+            .modal-body {
+                padding: 18px 16px 20px;
+                margin-top: -30px;
+            }
+            .modal-title {
+                font-size: 1.5rem;
+            }
+            .modal-actions .btn {
+                padding: 10px 18px;
+                font-size: 0.8rem;
+            }
+        }
+        @media (max-width: 480px) {
+            :root {
+                --card-width: 130px;
+                --card-height: 195px;
+                --hero-height: 65vh;
+            }
+            .hero {
+                min-height: 420px;
+            }
+            .hero-content {
+                padding: 0 16px 36px;
+            }
+            .hero-title {
+                font-size: 1.8rem;
+                letter-spacing: -0.5px;
+            }
+            .hero-badge-row {
+                gap: 6px;
+            }
+            .hero-badge {
+                font-size: 0.6rem;
+                padding: 3px 8px;
+            }
+            .hero-buttons {
+                gap: 8px;
+            }
+            .hero-buttons .btn {
+                padding: 8px 16px;
+                font-size: 0.75rem;
+            }
+            .movie-row {
+                padding: 0 12px;
+            }
+            .genre-bar {
+                padding: 0 12px;
+            }
+            .movie-card {
+                border-radius: var(--radius-sm);
+            }
+            .nav-search input {
+                width: 110px;
+                font-size: 0.75rem;
+            }
+            .nav-search input:focus {
+                width: 140px;
+            }
+            .toast-container {
+                bottom: 12px;
+                right: 12px;
+                left: 12px;
+            }
+            .toast {
+                font-size: 0.75rem;
+                padding: 10px 14px;
+            }
+        }
+
+        /* ============ UTILITIES ============ */
+        .hidden {
+            display: none !important;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============ NAVIGATION ============ -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-logo" id="navLogo">
+            <span class="nav-logo-icon">▶</span>
+            CineStream
+        </div>
+        <ul class="nav-links" id="navLinks">
+            <li><a class="active" data-section="home">Home</a></li>
+            <li><a data-section="movies">Movies</a></li>
+            <li><a data-section="series">Series</a></li>
+            <li><a data-section="mylist">My List</a></li>
+        </ul>
+        <div class="nav-right">
+            <div class="nav-search">
+                <input type="text" id="searchInput" placeholder="Search movies..." autocomplete="off">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="nav-profile" id="navProfile" title="Profile">
+                JD
+                <span class="badge"></span>
+            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+        </div>
+    </nav>
+
+    <!-- ============ HERO SECTION ============ -->
+    <section class="hero" id="hero">
+        <div class="hero-background" id="heroBackground">
+            <!-- Background images injected by JS -->
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content" id="heroContent">
+            <!-- Content injected by JS -->
+        </div>
+        <div class="hero-dots" id="heroDots">
+            <!-- Dots injected by JS -->
+        </div>
+    </section>
+
+    <!-- ============ MAIN CONTENT ============ -->
+    <main class="main-content" id="mainContent">
+        <div class="genre-bar" id="genreBar">
+            <!-- Genre chips injected by JS -->
+        </div>
+        <div id="movieRows">
+            <!-- Movie rows injected by JS -->
+        </div>
+        <div class="empty-state" id="emptyState">
+            <div class="empty-icon">🎬</div>
+            <p>No movies found. Try a different search term.</p>
+        </div>
+    </main>
+
+    <!-- ============ MOVIE DETAIL MODAL ============ -->
+    <div class="modal-backdrop" id="detailModalBackdrop">
+        <div class="modal" id="detailModal">
+            <div class="modal-hero">
+                <img class="modal-hero-img" id="modalHeroImg" src="" alt="Movie backdrop">
+                <div class="modal-hero-overlay"></div>
+                <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-title-row">
+                    <h2 class="modal-title" id="modalTitle"></h2>
+                </div>
+                <div class="modal-meta" id="modalMeta"></div>
+                <p class="modal-description" id="modalDescription"></p>
+                <div class="modal-cast">
+                    <p class="modal-cast-label">Cast</p>
+                    <div class="modal-cast-list" id="modalCast"></div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-play" id="modalPlayBtn">
+                        <span class="btn-icon">▶</span> Play Now
+                    </button>
+                    <button class="btn btn-watchlist" id="modalWatchlistBtn">
+                        <span class="btn-icon">+</span> <span id="watchlistBtnText">Add to List</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ VIDEO PLAYER MODAL ============ -->
+    <div class="player-backdrop" id="playerBackdrop">
+        <div class="player">
+            <div class="player-video-area" id="playerVideoArea">
+                <div class="player-video-bg" id="playerVideoBg"></div>
+                <div class="player-loading" id="playerLoading">
+                    <div class="spinner"></div>
+                    <span>Loading movie...</span>
+                </div>
+                <div class="player-title-bar" id="playerTitleBar">
+                    <span class="player-title" id="playerTitle">Movie Title</span>
+                    <button class="player-btn" id="playerCloseBtn" aria-label="Close">✕</button>
+                </div>
+                <div class="player-controls" id="playerControls">
+                    <div class="player-progress-row">
+                        <span class="player-time" id="playerCurrentTime">0:00</span>
+                        <div class="player-progress-bar" id="playerProgressBar">
+                            <div class="player-progress-fill" id="playerProgressFill"></div>
+                        </div>
+                        <span class="player-time" id="playerTotalTime">1:58:00</span>
+                    </div>
+                    <div class="player-buttons-row">
+                        <div class="player-buttons-left">
+                            <button class="player-btn play-main" id="playerPlayBtn" aria-label="Play/Pause">▶</button>
+                            <button class="player-btn" id="playerVolumeBtn" aria-label="Volume">🔊</button>
+                            <button class="player-btn" aria-label="Settings">⚙️</button>
+                        </div>
+                        <div class="player-buttons-right">
+                            <button class="player-btn" aria-label="Subtitles">💬</button>
+                            <button class="player-btn" aria-label="Fullscreen">⛶</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ TOAST CONTAINER ============ -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Help Center</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="footer-copy">© 2026 CineStream. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        (function() {
+            // ==================== MOVIE DATA ====================
+            const movies = [{
+                id: 1,
+                title: 'Dune: Part Two',
+                year: 2024,
+                rating: 8.9,
+                genre: 'Sci-Fi',
+                duration: '2h 46m',
+                quality: '4K',
+                description: 'Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the universe, he must prevent a terrible future only he can foresee.',
+                cast: ['Timothée Chalamet',
+                    'Zendaya',
+                    'Rebecca Ferguson',
+                    'Javier Bardem'
+                ],
+                backdropSeed: 'dune-backdrop',
+                posterSeed: 'dune-poster',
+                featured: true,
+                trending: true,
+                newRelease: true,
+                type: 'movie'
+            }, {
+                id: 2,
+                title: 'Oppenheimer',
+                year: 2023,
+                rating: 8.7,
+                genre: 'Drama',
+                duration: '3h 0m',
+                quality: '4K',
+                description: 'The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb. A gripping biographical thriller that explores the moral complexities of scientific discovery during wartime.',
+                cast: ['Cillian Murphy',
+                    'Emily Blunt',
+                    'Matt Damon',
+                    'Robert Downey Jr.'
+                ],
+                backdropSeed: 'oppenheimer-backdrop',
+                posterSeed: 'oppenheimer-poster',
+                featured: true,
+                trending: true,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 3,
+                title: 'The Batman',
+                year: 2022,
+                rating: 8.1,
+                genre: 'Action',
+                duration: '2h 56m',
+                quality: '4K',
+                description: 'When a sadistic serial killer begins murdering key political figures in Gotham, Batman is forced to investigate the city\'s hidden corruption and question his family\'s involvement. A dark, noir-driven superhero epic.',
+                cast: ['Robert Pattinson',
+                    'Zoë Kravitz',
+                    'Paul Dano',
+                    'Colin Farrell'
+                ],
+                backdropSeed: 'batman-backdrop',
+                posterSeed: 'batman-poster',
+                featured: true,
+                trending: true,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 4,
+                title: 'Inception',
+                year: 2010,
+                rating: 8.8,
+                genre: 'Sci-Fi',
+                duration: '2h 28m',
+                quality: 'HD',
+                description: 'A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO. A mind-bending journey through layers of dreams and reality.',
+                cast: ['Leonardo DiCaprio',
+                    'Joseph Gordon-Levitt',
+                    'Elliot Page',
+                    'Tom Hardy'
+                ],
+                backdropSeed: 'inception-backdrop',
+                posterSeed: 'inception-poster',
+                featured: false,
+                trending: true,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 5,
+                title: 'Interstellar',
+                year: 2014,
+                rating: 8.6,
+                genre: 'Sci-Fi',
+                duration: '2h 49m',
+                quality: '4K',
+                description: 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity\'s survival. A breathtaking journey across galaxies that explores love, time, and the resilience of the human spirit.',
+                cast: ['Matthew McConaughey',
+                    'Anne Hathaway',
+                    'Jessica Chastain',
+                    'Michael Caine'
+                ],
+                backdropSeed: 'interstellar-backdrop',
+                posterSeed: 'interstellar-poster',
+                featured: false,
+                trending: true,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 6,
+                title: 'Parasite',
+                year: 2019,
+                rating: 8.5,
+                genre: 'Thriller',
+                duration: '2h 12m',
+                quality: 'HD',
+                description: 'Greed and class discrimination threaten the newly formed symbiotic relationship between the wealthy Park family and the destitute Kim clan. A genre-defying masterpiece that swept the Academy Awards.',
+                cast: ['Song Kang-ho',
+                    'Lee Sun-kyun',
+                    'Cho Yeo-jeong',
+                    'Choi Woo-shik'
+                ],
+                backdropSeed: 'parasite-backdrop',
+                posterSeed: 'parasite-poster',
+                featured: false,
+                trending: true,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 7,
+                title: 'The Dark Knight',
+                year: 2008,
+                rating: 9.0,
+                genre: 'Action',
+                duration: '2h 32m',
+                quality: '4K',
+                description: 'When the Joker emerges as a new criminal mastermind, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice. A landmark superhero film.',
+                cast: ['Christian Bale',
+                    'Heath Ledger',
+                    'Aaron Eckhart',
+                    'Michael Caine'
+                ],
+                backdropSeed: 'darkknight-backdrop',
+                posterSeed: 'darkknight-poster',
+                featured: false,
+                trending: true,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 8,
+                title: 'Pulp Fiction',
+                year: 1994,
+                rating: 8.9,
+                genre: 'Crime',
+                duration: '2h 34m',
+                quality: 'HD',
+                description: 'The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption. Tarantino\'s groundbreaking classic.',
+                cast: ['John Travolta',
+                    'Uma Thurman',
+                    'Samuel L. Jackson',
+                    'Bruce Willis'
+                ],
+                backdropSeed: 'pulpfiction-backdrop',
+                posterSeed: 'pulpfiction-poster',
+                featured: false,
+                trending: false,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 9,
+                title: 'The Shawshank Redemption',
+                year: 1994,
+                rating: 9.3,
+                genre: 'Drama',
+                duration: '2h 22m',
+                quality: 'HD',
+                description: 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency. A timeless tale of hope and friendship.',
+                cast: ['Tim Robbins',
+                    'Morgan Freeman',
+                    'Bob Gunton',
+                    'William Sadler'
+                ],
+                backdropSeed: 'shawshank-backdrop',
+                posterSeed: 'shawshank-poster',
+                featured: false,
+                trending: false,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 10,
+                title: 'Spirited Away',
+                year: 2001,
+                rating: 8.6,
+                genre: 'Animation',
+                duration: '2h 5m',
+                quality: 'HD',
+                description: 'A young girl wanders into a world of gods, witches, and spirits, where she must find the strength to save her parents and return to the human world. Studio Ghibli\'s masterpiece.',
+                cast: ['Rumi Hiiragi',
+                    'Miyu Irino',
+                    'Mari Natsuki',
+                    'Takashi Naito'
+                ],
+                backdropSeed: 'spirited-backdrop',
+                posterSeed: 'spirited-poster',
+                featured: false,
+                trending: false,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 11,
+                title: 'Your Name',
+                year: 2016,
+                rating: 8.4,
+                genre: 'Animation',
+                duration: '1h 46m',
+                quality: 'HD',
+                description: 'Two teenagers share a profound, magical connection upon discovering they are swapping bodies. Things become more complicated when the boy and girl decide to meet in person.',
+                cast: ['Ryûnosuke Kamiki',
+                    'Mone Kamishiraishi',
+                    'Masami Nagasawa',
+                    'Etsuko Ichihara'
+                ],
+                backdropSeed: 'yourname-backdrop',
+                posterSeed: 'yourname-poster',
+                featured: false,
+                trending: true,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 12,
+                title: 'La La Land',
+                year: 2016,
+                rating: 8.0,
+                genre: 'Musical',
+                duration: '2h 8m',
+                quality: 'HD',
+                description: 'While navigating their careers in Los Angeles, a pianist and an actress fall in love while attempting to reconcile their aspirations for the future. A vibrant, romantic musical.',
+                cast: ['Ryan Gosling',
+                    'Emma Stone',
+                    'John Legend',
+                    'Rosemarie DeWitt'
+                ],
+                backdropSeed: 'lalaland-backdrop',
+                posterSeed: 'lalaland-poster',
+                featured: false,
+                trending: false,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 13,
+                title: 'Blade Runner 2049',
+                year: 2017,
+                rating: 8.0,
+                genre: 'Sci-Fi',
+                duration: '2h 44m',
+                quality: '4K',
+                description: 'A young blade runner\'s discovery of a long-buried secret leads him to track down former blade runner Rick Deckard, who\'s been missing for thirty years. A visually stunning sequel.',
+                cast: ['Ryan Gosling',
+                    'Harrison Ford',
+                    'Ana de Armas',
+                    'Jared Leto'
+                ],
+                backdropSeed: 'bladerunner-backdrop',
+                posterSeed: 'bladerunner-poster',
+                featured: false,
+                trending: false,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 14,
+                title: 'Get Out',
+                year: 2017,
+                rating: 8.1,
+                genre: 'Horror',
+                duration: '1h 44m',
+                quality: 'HD',
+                description: 'A young African-American man visits his white girlfriend\'s family estate, where he slowly uncovers a disturbing conspiracy. A groundbreaking psychological horror film.',
+                cast: ['Daniel Kaluuya',
+                    'Allison Williams',
+                    'Bradley Whitford',
+                    'Catherine Keener'
+                ],
+                backdropSeed: 'getout-backdrop',
+                posterSeed: 'getout-poster',
+                featured: false,
+                trending: false,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 15,
+                title: 'The Grand Budapest Hotel',
+                year: 2014,
+                rating: 8.1,
+                genre: 'Comedy',
+                duration: '1h 39m',
+                quality: 'HD',
+                description: 'A writer encounters the owner of an aging high-class hotel, who tells him of his early years serving as a lobby boy in the hotel\'s glorious years under an exceptional concierge.',
+                cast: ['Ralph Fiennes',
+                    'Tony Revolori',
+                    'Saoirse Ronan',
+                    'Willem Dafoe'
+                ],
+                backdropSeed: 'budapest-backdrop',
+                posterSeed: 'budapest-poster',
+                featured: false,
+                trending: false,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 16,
+                title: 'Mad Max: Fury Road',
+                year: 2015,
+                rating: 8.1,
+                genre: 'Action',
+                duration: '2h 0m',
+                quality: '4K',
+                description: 'In a post-apocalyptic wasteland, Max teams up with Furiosa to flee from cult leader Immortan Joe and his army. A relentless, high-octane action masterpiece.',
+                cast: ['Tom Hardy',
+                    'Charlize Theron',
+                    'Nicholas Hoult',
+                    'Hugh Keays-Byrne'
+                ],
+                backdropSeed: 'madmax-backdrop',
+                posterSeed: 'madmax-poster',
+                featured: false,
+                trending: false,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 17,
+                title: 'The Social Network',
+                year: 2010,
+                rating: 8.1,
+                genre: 'Drama',
+                duration: '2h 0m',
+                quality: 'HD',
+                description: 'Harvard student Mark Zuckerberg creates the social networking site that would become known as Facebook, but is later sued by two brothers who claimed he stole their idea.',
+                cast: ['Jesse Eisenberg',
+                    'Andrew Garfield',
+                    'Justin Timberlake',
+                    'Armie Hammer'
+                ],
+                backdropSeed: 'socialnetwork-backdrop',
+                posterSeed: 'socialnetwork-poster',
+                featured: false,
+                trending: false,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 18,
+                title: 'Whiplash',
+                year: 2014,
+                rating: 8.5,
+                genre: 'Drama',
+                duration: '1h 46m',
+                quality: 'HD',
+                description: 'A promising young drummer enrolls at a cut-throat music conservatory where his dreams of greatness are mentored by an instructor who will stop at nothing to realize a student\'s potential.',
+                cast: ['Miles Teller',
+                    'J.K. Simmons',
+                    'Paul Reiser',
+                    'Melissa Benoist'
+                ],
+                backdropSeed: 'whiplash-backdrop',
+                posterSeed: 'whiplash-poster',
+                featured: false,
+                trending: false,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 19,
+                title: 'Spider-Man: Across the Spider-Verse',
+                year: 2023,
+                rating: 8.7,
+                genre: 'Animation',
+                duration: '2h 20m',
+                quality: '4K',
+                description: 'Miles Morales catapults across the Multiverse, where he encounters a team of Spider-People charged with protecting its very existence. A groundbreaking animated adventure.',
+                cast: ['Shameik Moore',
+                    'Hailee Steinfeld',
+                    'Oscar Isaac',
+                    'Jake Johnson'
+                ],
+                backdropSeed: 'spiderverse-backdrop',
+                posterSeed: 'spiderverse-poster',
+                featured: true,
+                trending: true,
+                newRelease: true,
+                type: 'movie'
+            }, {
+                id: 20,
+                title: 'Everything Everywhere All at Once',
+                year: 2022,
+                rating: 8.8,
+                genre: 'Sci-Fi',
+                duration: '2h 19m',
+                quality: '4K',
+                description: 'A middle-aged Chinese immigrant is swept up into an insane adventure where she alone can save existence by exploring other universes and connecting with the lives she could have led.',
+                cast: ['Michelle Yeoh',
+                    'Ke Huy Quan',
+                    'Stephanie Hsu',
+                    'Jamie Lee Curtis'
+                ],
+                backdropSeed: 'everything-backdrop',
+                posterSeed: 'everything-poster',
+                featured: false,
+                trending: true,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 21,
+                title: 'The Matrix',
+                year: 1999,
+                rating: 8.7,
+                genre: 'Sci-Fi',
+                duration: '2h 16m',
+                quality: '4K',
+                description: 'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers. A landmark sci-fi action film.',
+                cast: ['Keanu Reeves',
+                    'Laurence Fishburne',
+                    'Carrie-Anne Moss',
+                    'Hugo Weaving'
+                ],
+                backdropSeed: 'matrix-backdrop',
+                posterSeed: 'matrix-poster',
+                featured: false,
+                trending: false,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 22,
+                title: 'Goodfellas',
+                year: 1990,
+                rating: 8.7,
+                genre: 'Crime',
+                duration: '2h 26m',
+                quality: 'HD',
+                description: 'The story of Henry Hill and his life in the mob, covering his relationship with his wife Karen and his mob partners Jimmy Conway and Tommy DeVito. Scorsese\'s crime masterpiece.',
+                cast: ['Robert De Niro',
+                    'Ray Liotta',
+                    'Joe Pesci',
+                    'Lorraine Bracco'
+                ],
+                backdropSeed: 'goodfellas-backdrop',
+                posterSeed: 'goodfellas-poster',
+                featured: false,
+                trending: false,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 23,
+                title: 'The Silence of the Lambs',
+                year: 1991,
+                rating: 8.6,
+                genre: 'Thriller',
+                duration: '1h 58m',
+                quality: 'HD',
+                description: 'A young FBI cadet must receive the help of an incarcerated and manipulative cannibal killer to help catch another serial killer. A chilling, iconic thriller.',
+                cast: ['Jodie Foster',
+                    'Anthony Hopkins',
+                    'Scott Glenn',
+                    'Ted Levine'
+                ],
+                backdropSeed: 'silence-backdrop',
+                posterSeed: 'silence-poster',
+                featured: false,
+                trending: false,
+                newRelease: false,
+                type: 'movie'
+            }, {
+                id: 24,
+                title: 'Princess Mononoke',
+                year: 1997,
+                rating: 8.4,
+                genre: 'Animation',
+                duration: '2h 14m',
+                quality: 'HD',
+                description: 'On a journey to find the cure for a curse, a young warrior finds himself in the middle of a war between the forest gods and a mining colony. An epic animated masterpiece.',
+                cast: ['Yōji Matsuda',
+                    'Yuriko Ishida',
+                    'Yūko Tanaka',
+                    'Billy Crudup'
+                ],
+                backdropSeed: 'mononoke-backdrop',
+                posterSeed: 'mononoke-poster',
+                featured: false,
+                trending: false,
+                newRelease: false,
+                type: 'movie'
+            }];
+
+            // ==================== STATE ====================
+            let watchlist = JSON.parse(localStorage.getItem('cinewatch_watchlist')) || [];
+            let currentHeroIndex = 0;
+            let currentGenre = 'All';
+            let searchQuery = '';
+            let heroInterval = null;
+            let currentDetailMovie = null;
+            let playerInterval = null;
+            let playerProgress = 0;
+            let playerDuration = 118 * 60; // 1h 58m in seconds
+            let isPlayerPlaying = false;
+
+            // ==================== DOM REFERENCES ====================
+            const navbar = document.getElementById('navbar');
+            const navLinks = document.getElementById('navLinks');
+            const menuToggle = document.getElementById('menuToggle');
+            const navLogo = document.getElementById('navLogo');
+            const searchInput = document.getElementById('searchInput');
+            const heroBackground = document.getElementById('heroBackground');
+            const heroContent = document.getElementById('heroContent');
+            const heroDots = document.getElementById('heroDots');
+            const genreBar = document.getElementById('genreBar');
+            const movieRows = document.getElementById('movieRows');
+            const emptyState = document.getElementById('emptyState');
+            const detailModalBackdrop = document.getElementById('detailModalBackdrop');
+            const modalClose = document.getElementById('modalClose');
+            const modalHeroImg = document.getElementById('modalHeroImg');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMeta = document.getElementById('modalMeta');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalCast = document.getElementById('modalCast');
+            const modalPlayBtn = document.getElementById('modalPlayBtn');
+            const modalWatchlistBtn = document.getElementById('modalWatchlistBtn');
+            const watchlistBtnText = document.getElementById('watchlistBtnText');
+            const playerBackdrop = document.getElementById('playerBackdrop');
+            const playerVideoBg = document.getElementById('playerVideoBg');
+            const playerLoading = document.getElementById('playerLoading');
+            const playerTitleBar = document.getElementById('playerTitleBar');
+            const playerTitle = document.getElementById('playerTitle');
+            const playerControls = document.getElementById('playerControls');
+            const playerCloseBtn = document.getElementById('playerCloseBtn');
+            const playerPlayBtn = document.getElementById('playerPlayBtn');
+            const playerProgressBar = document.getElementById('playerProgressBar');
+            const playerProgressFill = document.getElementById('playerProgressFill');
+            const playerCurrentTime = document.getElementById('playerCurrentTime');
+            const playerTotalTime = document.getElementById('playerTotalTime');
+            const playerVolumeBtn = document.getElementById('playerVolumeBtn');
+            const toastContainer = document.getElementById('toastContainer');
+
+            // ==================== UTILITY FUNCTIONS ====================
+            function getPosterUrl(seed, w = 400, h = 600) {
+                return `https://picsum.photos/seed/${seed}/${w}/${h}`;
+            }
+
+            function getBackdropUrl(seed, w = 1920, h = 1080) {
+                return `https://picsum.photos/seed/${seed}/${w}/${h}`;
+            }
+
+            function formatDuration(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            function formatMovieDuration(totalSeconds) {
+                const hrs = Math.floor(totalSeconds / 3600);
+                const mins = Math.floor((totalSeconds % 3600) / 60);
+                if (hrs > 0) return `${hrs}h ${mins}m`;
+                return `${mins}m`;
+            }
+
+            function showToast(message, icon = '✓') {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.innerHTML = `<span class="toast-icon">${icon}</span>${message}`;
+                toastContainer.appendChild(toast);
+                setTimeout(() => {
+                    toast.classList.add('removing');
+                    setTimeout(() => toast.remove(), 300);
+                }, 2500);
+            }
+
+            function isInWatchlist(movieId) {
+                return watchlist.includes(movieId);
+            }
+
+            function toggleWatchlist(movieId) {
+                if (isInWatchlist(movieId)) {
+                    watchlist = watchlist.filter(id => id !== movieId);
+                    localStorage.setItem('cinewatch_watchlist', JSON.stringify(watchlist));
+                    showToast('Removed from My List', '🗑️');
+                    return false;
+                } else {
+                    watchlist.push(movieId);
+                    localStorage.setItem('cinewatch_watchlist', JSON.stringify(watchlist));
+                    showToast('Added to My List', '✓');
+                    return true;
+                }
+            }
+
+            // ==================== HERO SECTION ====================
+            function getFeaturedMovies() {
+                return movies.filter(m => m.featured);
+            }
+
+            function renderHero() {
+                const featured = getFeaturedMovies();
+                if (featured.length === 0) return;
+                const movie = featured[currentHeroIndex % featured.length];
+
+                // Render backgrounds
+                heroBackground.innerHTML = featured.map((m, i) =>
+                    `<div class="hero-bg-img ${i === currentHeroIndex % featured.length ? 'active' : ''}" 
+                          style="background-image: url('${getBackdropUrl(m.backdropSeed)}')"></div>`
+                ).join('');
+
+                // Render content
+                heroContent.innerHTML = `
+                    <div class="hero-badge-row">
+                        <span class="hero-badge quality">${movie.quality}</span>
+                        <span class="hero-badge rating">⭐ ${movie.rating}</span>
+                        <span class="hero-badge">${movie.year}</span>
+                        <span class="hero-badge">${movie.duration}</span>
+                    </div>
+                    <h1 class="hero-title">${movie.title}</h1>
+                    <div class="hero-meta">
+                        <span>🎬 ${movie.type === 'movie' ? 'Movie' : 'Series'}</span>
+                        <span class="dot"></span>
+                        <span>${movie.genre}</span>
+                        <span class="dot"></span>
+                        <span>${movie.year}</span>
+                    </div>
+                    <p class="hero-description">${movie.description}</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-play" onclick="window._playMovie(${movie.id})">
+                            <span class="btn-icon">▶</span> Play Now
+                        </button>
+                        <button class="btn btn-secondary" onclick="window._openDetail(${movie.id})">
+                            <span class="btn-icon">ℹ</span> More Info
+                        </button>
+                    </div>
+                `;
+
+                // Render dots
+                heroDots.innerHTML = featured.map((_, i) =>
+                    `<button class="hero-dot ${i === currentHeroIndex % featured.length ? 'active' : ''}" 
+                          onclick="window._goToHero(${i})" aria-label="Slide ${i + 1}"></button>`
+                ).join('');
+            }
+
+            function startHeroRotation() {
+                stopHeroRotation();
+                heroInterval = setInterval(() => {
+                    currentHeroIndex++;
+                    renderHero();
+                }, 6000);
+            }
+
+            function stopHeroRotation() {
+                if (heroInterval) {
+                    clearInterval(heroInterval);
+                    heroInterval = null;
+                }
+            }
+
+            window._goToHero = function(index) {
+                currentHeroIndex = index;
+                renderHero();
+                startHeroRotation();
+            };
+
+            window._playMovie = function(movieId) {
+                const movie = movies.find(m => m.id === movieId);
+                if (movie) openPlayer(movie);
+            };
+
+            window._openDetail = function(movieId) {
+                const movie = movies.find(m => m.id === movieId);
+                if (movie) openDetailModal(movie);
+            };
+
+            // ==================== GENRE BAR ====================
+            function renderGenreBar() {
+                const genres = ['All', ...new Set(movies.map(m => m.genre))];
+                genreBar.innerHTML = genres.map(genre =>
+                    `<button class="genre-chip ${genre === currentGenre ? 'active' : ''}" 
+                          data-genre="${genre}">${genre}</button>`
+                ).join('');
+                genreBar.querySelectorAll('.genre-chip').forEach(chip => {
+                    chip.addEventListener('click', () => {
+                        currentGenre = chip.dataset.genre;
+                        renderGenreBar();
+                        renderMovieRows();
+                    });
+                });
+            }
+
+            // ==================== MOVIE ROWS ====================
+            function getFilteredMovies() {
+                let filtered = [...movies];
+                if (currentGenre !== 'All') {
+                    filtered = filtered.filter(m => m.genre === currentGenre);
+                }
+                if (searchQuery.trim()) {
+                    const q = searchQuery.toLowerCase().trim();
+                    filtered = filtered.filter(m =>
+                        m.title.toLowerCase().includes(q) ||
+                        m.genre.toLowerCase().includes(q) ||
+                        m.description.toLowerCase().includes(q) ||
+                        m.cast.some(c => c.toLowerCase().includes(q))
+                    );
+                }
+                return filtered;
+            }
+
+            function renderMovieCard(movie) {
+                const inList = isInWatchlist(movie.id);
+                const card = document.createElement('div');
+                card.className = 'movie-card';
+                card.style.animationDelay = `${Math.random() * 0.3}s`;
+                card.innerHTML = `
+                    <img class="movie-card-img" src="${getPosterUrl(movie.posterSeed)}" alt="${movie.title}" loading="lazy">
+                    <span class="movie-card-quality">${movie.quality}</span>
+                    <span class="movie-card-rating-badge">⭐ ${movie.rating}</span>
+                    <div class="movie-card-overlay">
+                        <button class="card-play-btn" title="Play">▶</button>
+                        <div class="movie-card-info">
+                            <p class="movie-card-title">${movie.title}</p>
+                            <div class="movie-card-meta">
+                                <span>${movie.year}</span>
+                                <span>•</span>
+                                <span class="star">⭐</span>
+                                <span>${movie.rating}</span>
+                                ${inList ? '<span style="color:#22c55e">✓</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                card.addEventListener('click', () => openDetailModal(movie));
+                card.querySelector('.card-play-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openPlayer(movie);
+                });
+                return card;
+            }
+
+            function renderMovieRows() {
+                const filtered = getFilteredMovies();
+                const allMovies = document.querySelectorAll('.movie-card');
+                allMovies.forEach(el => el.remove());
+
+                if (filtered.length === 0) {
+                    emptyState.classList.add('visible');
+                    movieRows.innerHTML = '';
+                    return;
+                }
+                emptyState.classList.remove('visible');
+
+                const trendingMovies = filtered.filter(m => m.trending);
+                const newReleases = filtered.filter(m => m.newRelease);
+                const otherMovies = filtered.filter(m => !m.trending && !m.newRelease);
+                const watchlistMovies = filtered.filter(m => isInWatchlist(m.id));
+
+                const rowsHtml = [];
+
+                if (trendingMovies.length > 0 && currentGenre === 'All' && !searchQuery) {
+                    rowsHtml.push(createRowHTML('trending', '🔥 Trending Now', trendingMovies));
+                }
+                if (newReleases.length > 0 && currentGenre === 'All' && !searchQuery) {
+                    rowsHtml.push(createRowHTML('new', '✨ New Releases', newReleases));
+                }
+                if (watchlistMovies.length > 0 && currentGenre === 'All' && !searchQuery) {
+                    rowsHtml.push(createRowHTML('watchlist', '📋 My List', watchlistMovies));
+                }
+                if (otherMovies.length > 0) {
+                    rowsHtml.push(createRowHTML('popular', '🎬 Popular Movies', otherMovies.slice(0, 12)));
+                }
+
+                movieRows.innerHTML = rowsHtml.join('');
+
+                // Attach scroll button events
+                movieRows.querySelectorAll('.movie-row').forEach(row => {
+                    const container = row.querySelector('.movie-row-scroll');
+                    const leftBtn = row.querySelector('.scroll-btn.left');
+                    const rightBtn = row.querySelector('.scroll-btn.right');
+                    if (leftBtn) leftBtn.addEventListener('click', () => {
+                        container.scrollBy({ left: -600, behavior: 'smooth' });
+                    });
+                    if (rightBtn) rightBtn.addEventListener('click', () => {
+                        container.scrollBy({ left: 600, behavior: 'smooth' });
+                    });
+                });
+
+                // Attach card events
+                movieRows.querySelectorAll('.movie-card').forEach(card => {
+                    const movieId = parseInt(card.dataset.movieId);
+                    const movie = movies.find(m => m.id === movieId);
+                    if (!movie) return;
+                    const playBtn = card.querySelector('.card-play-btn');
+                    if (playBtn) {
+                        playBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            openPlayer(movie);
+                        });
+                    }
+                    card.addEventListener('click', () => openDetailModal(movie));
+                });
+            }
+
+            function createRowHTML(className, title, movieList) {
+                const cards = movieList.map(m => {
+                    const inList = isInWatchlist(m.id);
+                    return `
+                    <div class="movie-card" data-movie-id="${m.id}">
+                        <img class="movie-card-img" src="${getPosterUrl(m.posterSeed)}" alt="${m.title}" loading="lazy">
+                        <span class="movie-card-quality">${m.quality}</span>
+                        <span class="movie-card-rating-badge">⭐ ${m.rating}</span>
+                        <div class="movie-card-overlay">
+                            <button class="card-play-btn" title="Play">▶</button>
+                            <div class="movie-card-info">
+                                <p class="movie-card-title">${m.title}</p>
+                                <div class="movie-card-meta">
+                                    <span>${m.year}</span>
+                                    <span>•</span>
+                                    <span class="star">⭐</span>
+                                    <span>${m.rating}</span>
+                                    ${inList ? '<span style="color:#22c55e">✓</span>' : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                }).join('');
+                return `
+                <div class="movie-row" data-row="${className}">
+                    <div class="movie-row-header">
+                        <h3 class="movie-row-title"><span class="row-accent"></span>${title}</h3>
+                        <span class="movie-row-link">View All →</span>
+                    </div>
+                    <div class="movie-row-scroll">
+                        ${cards}
+                    </div>
+                    <button class="scroll-btn left">‹</button>
+                    <button class="scroll-btn right">›</button>
+                </div>
+            `;
+            }
+
+            // ==================== SEARCH ====================
+            searchInput.addEventListener('input', (e) => {
+                searchQuery = e.target.value;
+                renderMovieRows();
+            });
+
+            // ==================== NAVIGATION ====================
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            menuToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('open');
+            });
+
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navLinks.querySelectorAll('a').forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    navLinks.classList.remove('open');
+                    const section = link.dataset.section;
+                    if (section === 'mylist') {
+                        currentGenre = 'All';
+                        searchQuery = '';
+                        searchInput.value = '';
+                        const wlMovies = movies.filter(m => isInWatchlist(m.id));
+                        if (wlMovies.length === 0) {
+                            movieRows.innerHTML = '';
+                            emptyState.classList.add('visible');
+                            emptyState.innerHTML =
+                                `<div class="empty-icon">📋</div><p>Your list is empty. Add movies to watch later!</p>`;
+                        } else {
+                            currentGenre = 'All';
+                            renderGenreBar();
+                            renderMovieRows();
+                        }
+                    } else if (section === 'home') {
+                        currentGenre = 'All';
+                        searchQuery = '';
+                        searchInput.value = '';
+                        renderGenreBar();
+                        renderMovieRows();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else if (section === 'movies' || section === 'series') {
+                        currentGenre = 'All';
+                        searchQuery = '';
+                        searchInput.value = '';
+                        const type = section === 'movies' ? 'movie' : 'series';
+                        const filtered = movies.filter(m => m.type === type);
+                        renderGenreBar();
+                        renderMovieRows();
+                    } else {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                });
+            });
+
+            navLogo.addEventListener('click', () => {
+                currentGenre = 'All';
+                searchQuery = '';
+                searchInput.value = '';
+                renderGenreBar();
+                renderMovieRows();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // ==================== DETAIL MODAL ====================
+            function openDetailModal(movie) {
+                currentDetailMovie = movie;
+                modalHeroImg.src = getBackdropUrl(movie.backdropSeed);
+                modalTitle.textContent = movie.title;
+                modalMeta.innerHTML = `
+                    <span class="badge badge-rating">⭐ ${movie.rating}</span>
+                    <span class="badge badge-genre">${movie.genre}</span>
+                    <span>${movie.year}</span>
+                    <span>${movie.duration}</span>
+                    <span>${movie.quality}</span>
+                `;
+                modalDescription.textContent = movie.description;
+                modalCast.innerHTML = movie.cast.map(c => `<span>${c}</span>`).join('');
+                updateWatchlistButton();
+                detailModalBackdrop.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeDetailModal() {
+                detailModalBackdrop.classList.remove('open');
+                document.body.style.overflow = '';
+                currentDetailMovie = null;
+                renderMovieRows();
+            }
+
+            function updateWatchlistButton() {
+                if (!currentDetailMovie) return;
+                const inList = isInWatchlist(currentDetailMovie.id);
+                if (inList) {
+                    modalWatchlistBtn.classList.add('in-list');
+                    watchlistBtnText.textContent = '✓ In My List';
+                } else {
+                    modalWatchlistBtn.classList.remove('in-list');
+                    watchlistBtnText.textContent = '+ Add to List';
+                }
+            }
+
+            modalClose.addEventListener('click', closeDetailModal);
+            detailModalBackdrop.addEventListener('click', (e) => {
+                if (e.target === detailModalBackdrop) closeDetailModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeDetailModal();
+                    closePlayer();
+                }
+            });
+
+            modalWatchlistBtn.addEventListener('click', () => {
+                if (!currentDetailMovie) return;
+                toggleWatchlist(currentDetailMovie.id);
+                updateWatchlistButton();
+            });
+
+            modalPlayBtn.addEventListener('click', () => {
+                if (currentDetailMovie) {
+                    closeDetailModal();
+                    openPlayer(currentDetailMovie);
+                }
+            });
+
+            // ==================== VIDEO PLAYER ====================
+            function openPlayer(movie) {
+                playerTitle.textContent = movie.title;
+                playerVideoBg.style.backgroundImage = `url('${getBackdropUrl(movie.backdropSeed)}')`;
+                playerBackdrop.classList.add('open');
+                document.body.style.overflow = 'hidden';
+                playerLoading.classList.remove('hidden');
+                playerControls.classList.remove('visible');
+                playerTitleBar.classList.remove('visible');
+                playerProgress = 0;
+                isPlayerPlaying = false;
+                playerPlayBtn.textContent = '▶';
+                updatePlayerProgress();
+
+                // Simulate loading
+                setTimeout(() => {
+                    playerLoading.classList.add('hidden');
+                    playerControls.classList.add('visible');
+                    playerTitleBar.classList.add('visible');
+                    isPlayerPlaying = true;
+                    playerPlayBtn.textContent = '⏸';
+                    startPlayerInterval();
+                }, 1800);
+            }
+
+            function closePlayer() {
+                playerBackdrop.classList.remove('open');
+                document.body.style.overflow = '';
+                stopPlayerInterval();
+                isPlayerPlaying = false;
+            }
+
+            function startPlayerInterval() {
+                stopPlayerInterval();
+                playerInterval = setInterval(() => {
+                    if (isPlayerPlaying && playerProgress < playerDuration) {
+                        playerProgress += 1;
+                        updatePlayerProgress();
+                    }
+                }, 1000);
+            }
+
+            function stopPlayerInterval() {
+                if (playerInterval) {
+                    clearInterval(playerInterval);
+                    playerInterval = null;
+                }
+            }
+
+            function updatePlayerProgress() {
+                const pct = (playerProgress / playerDuration) * 100;
+                playerProgressFill.style.width = `${pct}%`;
+                playerCurrentTime.textContent = formatDuration(playerProgress);
+                playerTotalTime.textContent = formatDuration(playerDuration);
+            }
+
+            playerCloseBtn.addEventListener('click', closePlayer);
+            playerBackdrop.addEventListener('click', (e) => {
+                if (e.target === playerBackdrop) closePlayer();
+            });
+
+            playerPlayBtn.addEventListener('click', () => {
+                if (isPlayerPlaying) {
+                    isPlayerPlaying = false;
+                    playerPlayBtn.textContent = '▶';
+                } else {
+                    isPlayerPlaying = true;
+                    playerPlayBtn.textContent = '⏸';
+                }
+                startPlayerInterval();
+            });
+
+            playerVolumeBtn.addEventListener('click', () => {
+                playerVolumeBtn.textContent = playerVolumeBtn.textContent === '🔊' ? '🔇' : '🔊';
+            });
+
+            playerProgressBar.addEventListener('click', (e) => {
+                const rect = playerProgressBar.getBoundingClientRect();
+                const pct = (e.clientX - rect.left) / rect.width;
+                playerProgress = Math.floor(pct * playerDuration);
+                updatePlayerProgress();
+            });
+
+            // ==================== INIT ====================
+            function init() {
+                renderHero();
+                startHeroRotation();
+                renderGenreBar();
+                renderMovieRows();
+            }
+
+            init();
+
+            // Handle keyboard for search
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    searchInput.value = '';
+                    searchQuery = '';
+                    renderMovieRows();
+                }
+            });
+
+            // Responsive nav links
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    navLinks.classList.remove('open');
+                }
+            });
+
+            console.log('🎬 CineStream initialized successfully!');
+            console.log(`📀 ${movies.length} movies loaded`);
+            console.log(`📋 ${watchlist.length} in watchlist`);
+        })();
+    </script>
+</body>
+</html>
